@@ -1,0 +1,30 @@
+{
+  "heads": {
+    "n_involvement": 2,
+    "subtype": 3
+  },
+  "clinical_variables": [
+    "age",
+    "age__missing",
+    "sex_male",
+    "sex_male__missing",
+    "smoker_current",
+    "smoker_current__missing",
+    "smoker_former",
+    "smoker_former__missing",
+    "pack_years",
+    "pack_years__missing"
+  ],
+  "test_auc": {
+    "image_only": {
+      "n_involvement": 0.7120593692022263,
+      "subtype": 0.6411438263073244
+    },
+    "image_plus_clinical": {
+      "n_involvement": 0.7005565862708719,
+      "subtype": 0.6486540429591505
+    }
+  },
+  "n_train": 416,
+  "n_test": 105
+}

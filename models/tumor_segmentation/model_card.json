@@ -1,0 +1,158 @@
+{
+  "task": "tumor_segmentation",
+  "created": "2026-10-27T18:07:43",
+  "architecture": "unet2d",
+  "base_channels": 16,
+  "input_size": 192,
+  "patch_vox": 96,
+  "version": "1",
+  "datasets": [
+    "lidc",
+    "nsclc_radiomics",
+    "nsclc_radiogenomics"
+  ],
+  "n_patients": {
+    "train": 422,
+    "val": 91,
+    "test": 93
+  },
+  "test_metrics": {
+    "dice": 0.7171973872650605,
+    "dice_ci": [
+      0.6966731174804236,
+      0.737469005187839
+    ],
+    "iou": 0.6120907604702187,
+    "iou_ci": [
+      0.5917635546339629,
+      0.6322338194906401
+    ],
+    "sensitivity": 0.7855749408861584,
+    "sensitivity_ci": [
+      0.7640561532853419,
+      0.8059169474795224
+    ],
+    "specificity": 0.9455349945141566,
+    "specificity_ci": [
+      0.9365229753653681,
+      0.9543681504590993
+    ],
+    "hd95_mm": 9.586841789779099,
+    "hd95_mm_ci": [
+      8.589829515870655,
+      10.700195904382403
+    ],
+    "n_test_slices": 670,
+    "n_test_patients": 93
+  },
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 1.1489405847364855,
+      "val_loss": 1.0491435527801514,
+      "val_dice": 0.591722302148018,
+      "sec": 209.28493118286133
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.9383883049411158,
+      "val_loss": 0.9212350845336914,
+      "val_dice": 0.6550355569595442,
+      "sec": 200.08431935310364
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.8357316370933286,
+      "val_loss": 0.8642591238021851,
+      "val_dice": 0.6888857079902173,
+      "sec": 217.40985655784607
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.7438902797237519,
+      "val_loss": 0.7886067628860474,
+      "val_dice": 0.6950025600966158,
+      "sec": 204.71932244300842
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.6905688247373027,
+      "val_loss": 0.7970690727233887,
+      "val_dice": 0.6828375323739275,
+      "sec": 211.29941987991333
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.6352180817434865,
+      "val_loss": 0.7135246992111206,
+      "val_dice": 0.7330848032729902,
+      "sec": 203.95749521255493
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.5897692424635733,
+      "val_loss": 0.6883445978164673,
+      "val_dice": 0.7281693509002025,
+      "sec": 201.96141719818115
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.5462095747070927,
+      "val_loss": 0.671390175819397,
+      "val_dice": 0.725113232763191,
+      "sec": 205.10938477516174
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.510864806752051,
+      "val_loss": 0.6453719735145569,
+      "val_dice": 0.75382186115173,
+      "sec": 201.55427742004395
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.482940020292036,
+      "val_loss": 0.6608602404594421,
+      "val_dice": 0.7389247212843605,
+      "sec": 200.38391709327698
+    },
+    {
+      "epoch": 11,
+      "train_loss": 0.4573516724571105,
+      "val_loss": 0.6407488584518433,
+      "val_dice": 0.7502090957293486,
+      "sec": 203.8322536945343
+    },
+    {
+      "epoch": 12,
+      "train_loss": 0.4388408064842224,
+      "val_loss": 0.6144514679908752,
+      "val_dice": 0.7606340212067314,
+      "sec": 200.90305948257446
+    },
+    {
+      "epoch": 13,
+      "train_loss": 0.4256875620734307,
+      "val_loss": 0.6183065176010132,
+      "val_dice": 0.7551927462055107,
+      "sec": 200.1688096523285
+    },
+    {
+      "epoch": 14,
+      "train_loss": 0.41898242312092937,
+      "val_loss": 0.612728476524353,
+      "val_dice": 0.762231471922677,
+      "sec": 208.338228225708
+    },
+    {
+      "epoch": 15,
+      "train_loss": 0.4146242889665788,
+      "val_loss": 0.6160988807678223,
+      "val_dice": 0.7565041535823936,
+      "sec": 200.85482573509216
+    }
+  ],
+  "metric_note": "2-D slice-level metrics on held-out patients; HD95 in pixels\u2248mm at the cached resolution.",
+  "label_kind": "LIDC 50%-consensus nodule contours; NSCLC GTV contours",
+  "caveat": "GTV contours include radiotherapy margins conventions; inter-reader variability is large."
+}

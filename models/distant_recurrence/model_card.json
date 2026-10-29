@@ -1,0 +1,8 @@
+{
+  "task": "distant_recurrence",
+  "created": "2026-10-27T17:13:36",
+  "refused": true,
+  "reason": "Task 'distant_recurrence' refused: classes below 15 labelled patients (no distant recurrence: n=10). A model trained on so few positives would produce unreliable probabilities.",
+  "label_kind": "Recurrence location = distant (post-treatment follow-up)",
+  "caveat": "This is a prognostic follow-up label, NOT baseline metastasis; censoring/follow-up length is ignored."
+}

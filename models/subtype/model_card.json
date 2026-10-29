@@ -1,0 +1,289 @@
+{
+  "task": "subtype",
+  "created": "2026-10-27T16:01:05",
+  "architecture": "C  Radiomics + PCA | pca | random_forest",
+  "version": "1",
+  "classes": [
+    "adenocarcinoma",
+    "squamous_cell_carcinoma",
+    "other_nsclc"
+  ],
+  "datasets": [
+    "nsclc_radiogenomics",
+    "nsclc_radiomics"
+  ],
+  "test_metrics": {
+    "n": 72,
+    "accuracy": 0.5694444444444444,
+    "balanced_accuracy": 0.5572299695106713,
+    "macro_f1": 0.5436507936507936,
+    "confusion_matrix": [
+      [
+        9,
+        3,
+        7
+      ],
+      [
+        5,
+        9,
+        12
+      ],
+      [
+        2,
+        2,
+        23
+      ]
+    ],
+    "class_names": [
+      "adenocarcinoma",
+      "squamous_cell_carcinoma",
+      "other_nsclc"
+    ],
+    "per_class": {
+      "adenocarcinoma": {
+        "precision": 0.5625,
+        "recall": 0.47368421052631576,
+        "f1-score": 0.5142857142857142,
+        "support": 19.0
+      },
+      "squamous_cell_carcinoma": {
+        "precision": 0.6428571428571429,
+        "recall": 0.34615384615384615,
+        "f1-score": 0.45,
+        "support": 26.0
+      },
+      "other_nsclc": {
+        "precision": 0.5476190476190477,
+        "recall": 0.8518518518518519,
+        "f1-score": 0.6666666666666666,
+        "support": 27.0
+      },
+      "accuracy": 0.5694444444444444,
+      "macro avg": {
+        "precision": 0.5843253968253969,
+        "recall": 0.5572299695106713,
+        "f1-score": 0.5436507936507936,
+        "support": 72.0
+      },
+      "weighted avg": {
+        "precision": 0.5859375,
+        "recall": 0.5694444444444444,
+        "f1-score": 0.5482142857142858,
+        "support": 72.0
+      }
+    },
+    "macro_roc_auc_ovr": 0.6940192209274015,
+    "n_dev_patients": 407,
+    "n_test_patients": 72,
+    "class_counts": {
+      "adenocarcinoma": 127,
+      "squamous_cell_carcinoma": 173,
+      "other_nsclc": 179
+    }
+  },
+  "comparison": [
+    {
+      "features": "C  Radiomics + PCA",
+      "reduction": "pca",
+      "classifier": "random_forest",
+      "n_features": 27,
+      "cv_auc_mean": 0.7376559285729795,
+      "cv_auc_std": 0.04115197878992946
+    },
+    {
+      "features": "H  Radiomics + clinical",
+      "reduction": "none",
+      "classifier": "random_forest",
+      "n_features": 29,
+      "cv_auc_mean": 0.7372527748935533,
+      "cv_auc_std": 0.040049662577044516
+    },
+    {
+      "features": "H  Radiomics + clinical",
+      "reduction": "none",
+      "classifier": "logistic",
+      "n_features": 29,
+      "cv_auc_mean": 0.7317447004934842,
+      "cv_auc_std": 0.03575063692948368
+    },
+    {
+      "features": "A  Radiomics only",
+      "reduction": "none",
+      "classifier": "random_forest",
+      "n_features": 27,
+      "cv_auc_mean": 0.7302251405551317,
+      "cv_auc_std": 0.03443022350907105
+    },
+    {
+      "features": "C  Radiomics + PCA",
+      "reduction": "pca",
+      "classifier": "logistic",
+      "n_features": 27,
+      "cv_auc_mean": 0.7289395612283733,
+      "cv_auc_std": 0.036677383796776306
+    },
+    {
+      "features": "A' Radiomics + LDA",
+      "reduction": "lda",
+      "classifier": "logistic",
+      "n_features": 27,
+      "cv_auc_mean": 0.7278828897517028,
+      "cv_auc_std": 0.030207369337435785
+    },
+    {
+      "features": "A  Radiomics only",
+      "reduction": "none",
+      "classifier": "logistic",
+      "n_features": 27,
+      "cv_auc_mean": 0.7236286915440167,
+      "cv_auc_std": 0.03253456872321024
+    },
+    {
+      "features": "C  Radiomics + PCA",
+      "reduction": "pca",
+      "classifier": "gradient_boosting",
+      "n_features": 27,
+      "cv_auc_mean": 0.7149247058993393,
+      "cv_auc_std": 0.056588059685995035
+    },
+    {
+      "features": "F  CNN + radiomics + clinical",
+      "reduction": "pca",
+      "classifier": "random_forest",
+      "n_features": 1053,
+      "cv_auc_mean": 0.7058040311447022,
+      "cv_auc_std": 0.037660317706940595
+    },
+    {
+      "features": "F  CNN + radiomics + clinical",
+      "reduction": "pca",
+      "classifier": "gradient_boosting",
+      "n_features": 1053,
+      "cv_auc_mean": 0.7015318107980499,
+      "cv_auc_std": 0.02987688716936135
+    },
+    {
+      "features": "H  Radiomics + clinical",
+      "reduction": "none",
+      "classifier": "gradient_boosting",
+      "n_features": 29,
+      "cv_auc_mean": 0.6974715182226031,
+      "cv_auc_std": 0.044667448677875504
+    },
+    {
+      "features": "B' CNN + PCA",
+      "reduction": "pca",
+      "classifier": "random_forest",
+      "n_features": 1024,
+      "cv_auc_mean": 0.6969139265593983,
+      "cv_auc_std": 0.053929446547555236
+    },
+    {
+      "features": "B  CNN features only",
+      "reduction": "none",
+      "classifier": "random_forest",
+      "n_features": 1024,
+      "cv_auc_mean": 0.6954363925158483,
+      "cv_auc_std": 0.032178508049971195
+    },
+    {
+      "features": "G  Radiomics + CNN + PCA",
+      "reduction": "pca",
+      "classifier": "random_forest",
+      "n_features": 1051,
+      "cv_auc_mean": 0.695311929415351,
+      "cv_auc_std": 0.03470822429417312
+    },
+    {
+      "features": "G  Radiomics + CNN + PCA",
+      "reduction": "pca",
+      "classifier": "logistic",
+      "n_features": 1051,
+      "cv_auc_mean": 0.6933112836985036,
+      "cv_auc_std": 0.03164880161391946
+    },
+    {
+      "features": "F  CNN + radiomics + clinical",
+      "reduction": "pca",
+      "classifier": "logistic",
+      "n_features": 1053,
+      "cv_auc_mean": 0.6915944826683612,
+      "cv_auc_std": 0.037023379694720915
+    },
+    {
+      "features": "E  CNN + clinical",
+      "reduction": "pca",
+      "classifier": "random_forest",
+      "n_features": 1026,
+      "cv_auc_mean": 0.6894148799558432,
+      "cv_auc_std": 0.03528332126326979
+    },
+    {
+      "features": "E  CNN + clinical",
+      "reduction": "pca",
+      "classifier": "gradient_boosting",
+      "n_features": 1026,
+      "cv_auc_mean": 0.6886607102674351,
+      "cv_auc_std": 0.042306488432098145
+    },
+    {
+      "features": "A  Radiomics only",
+      "reduction": "none",
+      "classifier": "gradient_boosting",
+      "n_features": 27,
+      "cv_auc_mean": 0.6877660935060006,
+      "cv_auc_std": 0.03229890653057286
+    },
+    {
+      "features": "B  CNN features only",
+      "reduction": "none",
+      "classifier": "gradient_boosting",
+      "n_features": 1024,
+      "cv_auc_mean": 0.6849877636550177,
+      "cv_auc_std": 0.03349683326083918
+    },
+    {
+      "features": "B' CNN + PCA",
+      "reduction": "pca",
+      "classifier": "gradient_boosting",
+      "n_features": 1024,
+      "cv_auc_mean": 0.6832802900972041,
+      "cv_auc_std": 0.03687540495998144
+    },
+    {
+      "features": "E  CNN + clinical",
+      "reduction": "pca",
+      "classifier": "logistic",
+      "n_features": 1026,
+      "cv_auc_mean": 0.672866240520029,
+      "cv_auc_std": 0.037831352393366144
+    },
+    {
+      "features": "B' CNN + PCA",
+      "reduction": "pca",
+      "classifier": "logistic",
+      "n_features": 1024,
+      "cv_auc_mean": 0.6708704613918105,
+      "cv_auc_std": 0.042529869251052996
+    },
+    {
+      "features": "G  Radiomics + CNN + PCA",
+      "reduction": "pca",
+      "classifier": "gradient_boosting",
+      "n_features": 1051,
+      "cv_auc_mean": 0.6691722408161034,
+      "cv_auc_std": 0.037859466208161115
+    },
+    {
+      "features": "D  CNN + PCA + LDA",
+      "reduction": "pca_lda",
+      "classifier": "logistic",
+      "n_features": 1024,
+      "cv_auc_mean": 0.6603171435235011,
+      "cv_auc_std": 0.021928726097755116
+    }
+  ],
+  "staging_note": "Lung1 = clinical TNM; Radiogenomics = pathological TNM (mixed sources).",
+  "label_kind": "Pathology-reported histology",
+  "caveat": "Only applicable to a known NSCLC primary tumour. Small-cell lung cancer is absent from training data and cannot be predicted. Imaging-based subtype prediction is known to be only moderately accurate."
+}

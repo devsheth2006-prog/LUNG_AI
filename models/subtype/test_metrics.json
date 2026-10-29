@@ -1,0 +1,69 @@
+{
+  "n": 72,
+  "accuracy": 0.5694444444444444,
+  "balanced_accuracy": 0.5572299695106713,
+  "macro_f1": 0.5436507936507936,
+  "confusion_matrix": [
+    [
+      9,
+      3,
+      7
+    ],
+    [
+      5,
+      9,
+      12
+    ],
+    [
+      2,
+      2,
+      23
+    ]
+  ],
+  "class_names": [
+    "adenocarcinoma",
+    "squamous_cell_carcinoma",
+    "other_nsclc"
+  ],
+  "per_class": {
+    "adenocarcinoma": {
+      "precision": 0.5625,
+      "recall": 0.47368421052631576,
+      "f1-score": 0.5142857142857142,
+      "support": 19.0
+    },
+    "squamous_cell_carcinoma": {
+      "precision": 0.6428571428571429,
+      "recall": 0.34615384615384615,
+      "f1-score": 0.45,
+      "support": 26.0
+    },
+    "other_nsclc": {
+      "precision": 0.5476190476190477,
+      "recall": 0.8518518518518519,
+      "f1-score": 0.6666666666666666,
+      "support": 27.0
+    },
+    "accuracy": 0.5694444444444444,
+    "macro avg": {
+      "precision": 0.5843253968253969,
+      "recall": 0.5572299695106713,
+      "f1-score": 0.5436507936507936,
+      "support": 72.0
+    },
+    "weighted avg": {
+      "precision": 0.5859375,
+      "recall": 0.5694444444444444,
+      "f1-score": 0.5482142857142858,
+      "support": 72.0
+    }
+  },
+  "macro_roc_auc_ovr": 0.6940192209274015,
+  "n_dev_patients": 407,
+  "n_test_patients": 72,
+  "class_counts": {
+    "adenocarcinoma": 127,
+    "squamous_cell_carcinoma": 173,
+    "other_nsclc": 179
+  }
+}

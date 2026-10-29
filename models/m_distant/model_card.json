@@ -1,0 +1,8 @@
+{
+  "task": "m_distant",
+  "created": "2026-10-27T17:13:36",
+  "refused": true,
+  "reason": "Task 'm_distant' refused: classes below 15 labelled patients (M1: n=4). A model trained on so few positives would produce unreliable probabilities.",
+  "label_kind": "M category from the clinical CSV",
+  "caveat": "M1 cases are rare in both cohorts. Training is refused below `risk.min_positive_labels` positives; a chest CT patch cannot show distant organs."
+}

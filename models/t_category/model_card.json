@@ -1,0 +1,307 @@
+{
+  "task": "t_category",
+  "created": "2026-10-27T16:22:59",
+  "architecture": "H  Radiomics + clinical | none | random_forest",
+  "version": "1",
+  "classes": [
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+  ],
+  "datasets": [
+    "nsclc_radiogenomics",
+    "nsclc_radiomics"
+  ],
+  "test_metrics": {
+    "n": 78,
+    "accuracy": 0.3974358974358974,
+    "balanced_accuracy": 0.31509056078021597,
+    "macro_f1": 0.28552846055032005,
+    "confusion_matrix": [
+      [
+        4,
+        8,
+        0,
+        10
+      ],
+      [
+        1,
+        20,
+        0,
+        8
+      ],
+      [
+        0,
+        5,
+        0,
+        4
+      ],
+      [
+        0,
+        11,
+        0,
+        7
+      ]
+    ],
+    "class_names": [
+      "T1",
+      "T2",
+      "T3",
+      "T4"
+    ],
+    "per_class": {
+      "T1": {
+        "precision": 0.8,
+        "recall": 0.18181818181818182,
+        "f1-score": 0.2962962962962963,
+        "support": 22.0
+      },
+      "T2": {
+        "precision": 0.45454545454545453,
+        "recall": 0.6896551724137931,
+        "f1-score": 0.547945205479452,
+        "support": 29.0
+      },
+      "T3": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1-score": 0.0,
+        "support": 9.0
+      },
+      "T4": {
+        "precision": 0.2413793103448276,
+        "recall": 0.3888888888888889,
+        "f1-score": 0.2978723404255319,
+        "support": 18.0
+      },
+      "accuracy": 0.3974358974358974,
+      "macro avg": {
+        "precision": 0.37398119122257056,
+        "recall": 0.31509056078021597,
+        "f1-score": 0.28552846055032005,
+        "support": 78.0
+      },
+      "weighted avg": {
+        "precision": 0.4503416124105779,
+        "recall": 0.3974358974358974,
+        "f1-score": 0.3560337385266949,
+        "support": 78.0
+      }
+    },
+    "macro_roc_auc_ovr": 0.6469624353459221,
+    "n_dev_patients": 440,
+    "n_test_patients": 78,
+    "class_counts": {
+      "T1": 144,
+      "T2": 190,
+      "T3": 62,
+      "T4": 122
+    }
+  },
+  "comparison": [
+    {
+      "features": "H  Radiomics + clinical",
+      "reduction": "none",
+      "classifier": "random_forest",
+      "n_features": 29,
+      "cv_auc_mean": 0.6366980996575501,
+      "cv_auc_std": 0.03336305428627353
+    },
+    {
+      "features": "A  Radiomics only",
+      "reduction": "none",
+      "classifier": "random_forest",
+      "n_features": 27,
+      "cv_auc_mean": 0.6323656798840604,
+      "cv_auc_std": 0.033908808616558934
+    },
+    {
+      "features": "C  Radiomics + PCA",
+      "reduction": "pca",
+      "classifier": "logistic",
+      "n_features": 27,
+      "cv_auc_mean": 0.6220600016126959,
+      "cv_auc_std": 0.04030509421634912
+    },
+    {
+      "features": "A' Radiomics + LDA",
+      "reduction": "lda",
+      "classifier": "logistic",
+      "n_features": 27,
+      "cv_auc_mean": 0.618770987443002,
+      "cv_auc_std": 0.025480192894246034
+    },
+    {
+      "features": "H  Radiomics + clinical",
+      "reduction": "none",
+      "classifier": "gradient_boosting",
+      "n_features": 29,
+      "cv_auc_mean": 0.6168696738814712,
+      "cv_auc_std": 0.045308675821552555
+    },
+    {
+      "features": "C  Radiomics + PCA",
+      "reduction": "pca",
+      "classifier": "random_forest",
+      "n_features": 27,
+      "cv_auc_mean": 0.6086309106216928,
+      "cv_auc_std": 0.01720256869762251
+    },
+    {
+      "features": "A  Radiomics only",
+      "reduction": "none",
+      "classifier": "gradient_boosting",
+      "n_features": 27,
+      "cv_auc_mean": 0.6058462656864584,
+      "cv_auc_std": 0.030716304755545192
+    },
+    {
+      "features": "H  Radiomics + clinical",
+      "reduction": "none",
+      "classifier": "logistic",
+      "n_features": 29,
+      "cv_auc_mean": 0.6027494384846797,
+      "cv_auc_std": 0.02335231538544949
+    },
+    {
+      "features": "A  Radiomics only",
+      "reduction": "none",
+      "classifier": "logistic",
+      "n_features": 27,
+      "cv_auc_mean": 0.602671572066512,
+      "cv_auc_std": 0.03406105862294175
+    },
+    {
+      "features": "F  CNN + radiomics + clinical",
+      "reduction": "pca",
+      "classifier": "gradient_boosting",
+      "n_features": 1053,
+      "cv_auc_mean": 0.5888282479281418,
+      "cv_auc_std": 0.032499379843094485
+    },
+    {
+      "features": "G  Radiomics + CNN + PCA",
+      "reduction": "pca",
+      "classifier": "logistic",
+      "n_features": 1051,
+      "cv_auc_mean": 0.5806562909554733,
+      "cv_auc_std": 0.040830240664688155
+    },
+    {
+      "features": "F  CNN + radiomics + clinical",
+      "reduction": "pca",
+      "classifier": "logistic",
+      "n_features": 1053,
+      "cv_auc_mean": 0.5763818805051273,
+      "cv_auc_std": 0.03822656498200222
+    },
+    {
+      "features": "B  CNN features only",
+      "reduction": "none",
+      "classifier": "logistic",
+      "n_features": 1024,
+      "cv_auc_mean": 0.5734822738814149,
+      "cv_auc_std": 0.05108469581905171
+    },
+    {
+      "features": "B' CNN + PCA",
+      "reduction": "pca",
+      "classifier": "logistic",
+      "n_features": 1024,
+      "cv_auc_mean": 0.5728075921872531,
+      "cv_auc_std": 0.035248671249054654
+    },
+    {
+      "features": "B  CNN features only",
+      "reduction": "none",
+      "classifier": "gradient_boosting",
+      "n_features": 1024,
+      "cv_auc_mean": 0.5721737105645788,
+      "cv_auc_std": 0.027770027114379904
+    },
+    {
+      "features": "C  Radiomics + PCA",
+      "reduction": "pca",
+      "classifier": "gradient_boosting",
+      "n_features": 27,
+      "cv_auc_mean": 0.5718988726542181,
+      "cv_auc_std": 0.024099727448871372
+    },
+    {
+      "features": "E  CNN + clinical",
+      "reduction": "pca",
+      "classifier": "logistic",
+      "n_features": 1026,
+      "cv_auc_mean": 0.5709553037961822,
+      "cv_auc_std": 0.03408788548917614
+    },
+    {
+      "features": "E  CNN + clinical",
+      "reduction": "pca",
+      "classifier": "random_forest",
+      "n_features": 1026,
+      "cv_auc_mean": 0.5679841432529484,
+      "cv_auc_std": 0.034979619097494856
+    },
+    {
+      "features": "G  Radiomics + CNN + PCA",
+      "reduction": "pca",
+      "classifier": "gradient_boosting",
+      "n_features": 1051,
+      "cv_auc_mean": 0.5656461452617508,
+      "cv_auc_std": 0.019233681575966163
+    },
+    {
+      "features": "B  CNN features only",
+      "reduction": "none",
+      "classifier": "random_forest",
+      "n_features": 1024,
+      "cv_auc_mean": 0.5644476752525065,
+      "cv_auc_std": 0.039361559705281164
+    },
+    {
+      "features": "B' CNN + PCA",
+      "reduction": "pca",
+      "classifier": "random_forest",
+      "n_features": 1024,
+      "cv_auc_mean": 0.5642308059607701,
+      "cv_auc_std": 0.03333298929986724
+    },
+    {
+      "features": "G  Radiomics + CNN + PCA",
+      "reduction": "pca",
+      "classifier": "random_forest",
+      "n_features": 1051,
+      "cv_auc_mean": 0.5634670702157722,
+      "cv_auc_std": 0.038403595512053836
+    },
+    {
+      "features": "F  CNN + radiomics + clinical",
+      "reduction": "pca",
+      "classifier": "random_forest",
+      "n_features": 1053,
+      "cv_auc_mean": 0.5614391570620488,
+      "cv_auc_std": 0.02941010013738199
+    },
+    {
+      "features": "B' CNN + PCA",
+      "reduction": "pca",
+      "classifier": "gradient_boosting",
+      "n_features": 1024,
+      "cv_auc_mean": 0.5567933438546151,
+      "cv_auc_std": 0.005829716365165876
+    },
+    {
+      "features": "D  CNN + PCA + LDA",
+      "reduction": "pca_lda",
+      "classifier": "logistic",
+      "n_features": 1024,
+      "cv_auc_mean": 0.5531638196673672,
+      "cv_auc_std": 0.049954557928685375
+    }
+  ],
+  "staging_note": "Lung1 = clinical TNM; Radiogenomics = pathological TNM (mixed sources).",
+  "label_kind": "Clinical (Lung1) or pathological (Radiogenomics) T category \u2014 different TNM editions/sources",
+  "caveat": "T depends on invasion of structures (chest wall, mediastinum) that a lesion patch may not show. Labels mix clinical and pathological staging; TNM edition differs between cohorts."
+}
