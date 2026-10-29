@@ -1,0 +1,10 @@
+# Optional extras for the full research workflow
+-r requirements.txt
+pylidc>=0.2.3          # LIDC-IDRI annotations (needs ~/.pylidcrc)
+setuptools<81          # pylidc imports pkg_resources, removed in setuptools 81
+mlflow>=2.12           # experiment tracking UI (falls back to mlruns/runs.jsonl without it)
+monai>=1.3             # optional MONAI networks / transforms
+pyradiomics>=3.1       # IBSI-compliant radiomics (extract_features.py --pyradiomics); best on Python <=3.11
+shap>=0.45             # SHAP explanations for tabular models
+xgboost>=2.0           # optional extra classifier
+jupyter>=1.0

@@ -1,0 +1,21 @@
+# Separated deployment: UI and inference API as two services sharing the trained models.
+services:
+  api:
+    build: .
+    command: ["api"]
+    ports: ["8000:8000"]
+    volumes: ["./models:/app/models:ro"]
+    environment:
+      CTC_PROFILE: lite
+      CTC_MAX_UPLOAD_MB: "500"
+      CTC_CORS_ORIGINS: http://localhost:8501
+  ui:
+    build: .
+    command: ["ui"]
+    ports: ["8501:8501"]
+    volumes: ["./models:/app/models:ro", "./outputs:/app/outputs:ro"]
+    depends_on: [api]
+    # Uncomment to route uploads through the API service (results only; the CT viewer then needs
+    # the in-process mode because image arrays are not sent over HTTP):
+    # environment:
+    #   CTC_API_URL: http://api:8000

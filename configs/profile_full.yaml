@@ -1,0 +1,17 @@
+# Full research profile: GPU with >= 12 GB VRAM recommended.
+profile: full
+preprocessing:
+  target_spacing_mm: [1.0, 1.0, 1.0]
+  slice_size: 256
+  patch_size_vox: 64
+segmentation:
+  lung: {model_name: unet3d, base_channels: 16}
+  tumor: {model_name: unet3d, base_channels: 32}
+training:
+  batch_size: 8
+  epochs: 100
+  num_workers: 8
+  early_stopping_patience: 15
+classifier:
+  architectures: [resnet18, densenet121, cnn3d]
+  input_mode: "3d"

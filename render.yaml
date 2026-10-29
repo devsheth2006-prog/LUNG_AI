@@ -1,0 +1,19 @@
+# Render blueprint (free tier: 512 MB RAM — enough for the lite UI with 2-D models; use a paid
+# instance for full-resolution 3-D CT). Trained weights must be committed with Git LFS or
+# downloaded at start-up; never commit patient data.
+services:
+  - type: web
+    name: ct-cancer-ai-ui
+    runtime: docker
+    plan: free
+    dockerCommand: sh /usr/local/bin/entry ui
+    healthCheckPath: /_stcore/health
+  - type: web
+    name: ct-cancer-ai-api
+    runtime: docker
+    plan: free
+    dockerCommand: sh /usr/local/bin/entry api
+    healthCheckPath: /health
+    envVars:
+      - key: CTC_PROFILE
+        value: lite

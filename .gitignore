@@ -1,0 +1,29 @@
+# Medical data — NEVER commit images, masks or clinical tables
+data/raw/
+data/processed/
+data/features/
+data/splits/*.json
+*.dcm
+*.nii
+*.nii.gz
+*.mhd
+*.raw
+*.npz
+
+# Trained models / experiment outputs (use Git LFS or a release asset if you share weights)
+models/*/
+!models/README.md
+mlruns/
+outputs/
+.torch/
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+.venv/
+venv/
+.ipynb_checkpoints/
+.env
+.DS_Store

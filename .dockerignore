@@ -1,0 +1,9 @@
+data/
+mlruns/
+outputs/
+.git/
+.venv/
+**/__pycache__/
+*.npz
+*.dcm
+*.nii*

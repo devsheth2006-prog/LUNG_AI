@@ -1,0 +1,19 @@
+name: ct-cancer-ai
+channels:
+  - conda-forge
+  - pytorch
+dependencies:
+  - python=3.11
+  - pip
+  - numpy
+  - scipy
+  - pandas
+  - scikit-learn
+  - scikit-image
+  - matplotlib
+  - pyyaml
+  - simpleitk
+  - pydicom
+  - nibabel
+  - pip:
+      - -r requirements-research.txt

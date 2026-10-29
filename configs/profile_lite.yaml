@@ -1,0 +1,16 @@
+# Lightweight demonstration profile: runs on a student laptop (CPU, 8–16 GB RAM).
+profile: lite
+preprocessing:
+  target_spacing_mm: [1.5, 1.0, 1.0]
+  slice_size: 192
+  patch_size_vox: 48
+segmentation:
+  lung: {model_name: unet2d, base_channels: 8}
+  tumor: {model_name: unet2d, base_channels: 16}
+training:
+  batch_size: 16
+  epochs: 15
+  num_workers: 0
+classifier:
+  architectures: [resnet18, densenet121]
+  input_mode: "2.5d"

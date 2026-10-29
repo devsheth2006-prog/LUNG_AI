@@ -1,0 +1,107 @@
+# ---------------------------------------------------------------------------
+# Default configuration — AI-Assisted CT Lung Cancer Research Platform
+# Every script accepts --config <file> and dotted overrides such as
+#   --set training.epochs=5 --set seed=7
+# ---------------------------------------------------------------------------
+project_name: ct-cancer-ai
+seed: 42
+profile: lite            # lite | full  (see configs/profile_*.yaml)
+device: auto             # auto | cpu | cuda | mps
+
+paths:
+  raw_root: data/raw
+  processed_root: data/processed
+  splits_dir: data/splits
+  features_dir: data/features
+  models_dir: models
+  reports_dir: outputs/reports
+  figures_dir: outputs/figures
+  mlruns: mlruns
+
+datasets:
+  lidc_idri:
+    root: data/raw/LIDC-IDRI             # DICOM tree as downloaded by NBIA Data Retriever
+    pylidc_config: ~/.pylidcrc           # pylidc needs the path to the DICOM tree
+    malignancy_rule: mean_exclude_3      # mean rating of readers; <3 benign, >3 malignant, ==3 dropped
+    min_readers: 2
+  luna16:
+    root: data/raw/LUNA16                # subset0..9 *.mhd, annotations.csv, candidates_V2.csv, seg-lungs-LUNA16/
+  nsclc_radiomics:
+    root: data/raw/NSCLC-Radiomics       # DICOM + RTSTRUCT/SEG
+    clinical_csv: data/raw/NSCLC-Radiomics/NSCLC-Radiomics-Lung1.clinical.csv
+  nsclc_radiogenomics:
+    root: data/raw/NSCLC-Radiogenomics
+    clinical_csv: data/raw/NSCLC-Radiogenomics/NSCLCR01Radiogenomic_DATA_LABELS.csv
+
+preprocessing:
+  target_spacing_mm: [1.0, 1.0, 1.0]     # (z, y, x) isotropic resampling
+  hu_clip: [-1200, 600]
+  lung_window: {level: -600, width: 1500}
+  mediastinal_window: {level: 40, width: 400}
+  denoise: none                          # none | median | gaussian
+  slice_size: 256                        # 2D lite models
+  patch_size_mm: 48                      # lesion-centred patch for classifiers
+  patch_size_vox: 64
+
+splits:
+  train: 0.70
+  val: 0.15
+  test: 0.15
+  stratify_on: label                     # stratify patient-level split on the patient's label
+
+segmentation:
+  lung:
+    method: auto                         # auto -> trained U-Net if present, else classical baseline
+    model_name: unet2d
+    base_channels: 16
+  tumor:
+    model_name: unet2d                   # unet2d | unet3d
+    base_channels: 16
+    min_component_mm3: 20
+
+detection:
+  candidate_min_diameter_mm: 3.0
+  candidate_max_diameter_mm: 40.0
+  max_candidates: 30
+  nms_distance_mm: 8.0
+  score_threshold: 0.5                   # only applied once a trained FP-reduction model exists
+
+training:
+  batch_size: 32
+  lr: 3.0e-4
+  weight_decay: 1.0e-4
+  epochs: 30
+  num_workers: 2
+  early_stopping_patience: 6
+  loss: focal                            # ce | weighted_ce | focal
+  focal_gamma: 2.0
+  freeze_backbone_epochs: 3              # transfer learning: train head first, then unfreeze
+
+classifier:
+  architectures: [resnet18, densenet121] # compared in train_classifier.py
+  pretrained: true
+  input_mode: "2.5d"                     # 3 adjacent axial slices -> 3 channels (see README)
+  calibrate: temperature                 # none | temperature
+
+classical:
+  pca_variance: 0.95
+  lda_components: null                   # null -> n_classes - 1
+  cv_folds: 5
+
+risk:
+  min_positive_labels: 15                # refuse to train a head with fewer positives
+  models: [logistic, random_forest, gradient_boosting]
+  risk_bands: {low: 0.33, high: 0.66}
+
+evaluation:
+  bootstrap_iterations: 1000
+  ci: 0.95
+
+app:
+  max_upload_mb: 500
+  keep_uploads: false
+  api_url: null                          # set to http://api:8000 to make Streamlit call FastAPI
+
+tracking:
+  backend: auto                          # auto | mlflow | json
+  experiment_name: ct-cancer-ai
