@@ -261,7 +261,7 @@ class AnalysisPipeline:
         seg_method = "classical density component (U-Net not trained)"
         seg = self.bank.torch_model("tumor_segmentation") if pre.is_hu else None
         if seg is not None:
-            mask = self._segment_lesion(seg, pre, c) | np.zeros(shape, bool)
+            mask = self._segment_lesion(seg, pre, c, lung) | np.zeros(shape, bool)
             seg_method = f"U-Net ({seg[1].get('architecture')})"
             if not mask.any():
                 mask = full_mask(c, shape)
@@ -284,8 +284,16 @@ class AnalysisPipeline:
             lesion.update(self._malignancy(mal_model, pre, meas["centroid_zyx_vox"], c.id, arrays))
         return lesion
 
-    def _segment_lesion(self, seg, pre, c) -> np.ndarray:
+    def _segment_lesion(self, seg, pre, c, lung: np.ndarray | None = None) -> np.ndarray:
+        """Tumour U-Net on the slices through the candidate, restricted to its neighbourhood.
+
+        The tumour U-Net was trained on axial slices *through* lesions (training/train_segmentation.py),
+        so it is only applied where that holds: the candidate's z-extent (+2 slices) and an in-plane box
+        around it (+50% of its size, at least 6 mm). Outside that region it would mark normal tissue as
+        tumour. The result is also limited to voxels denser than aerated lung (> -650 HU), to the
+        (slightly dilated) lung mask and to the connected component at the candidate centre."""
         import torch
+        from skimage import measure
 
         model, card = seg
         size = card.get("patch_vox", 64)
@@ -303,9 +311,21 @@ class AnalysisPipeline:
         d_lo = src_lo - lo
         d_hi = d_lo + (src_hi - src_lo)
         out[tuple(slice(a, b) for a, b in zip(src_lo, src_hi))] = pred[tuple(slice(a, b) for a, b in zip(d_lo, d_hi))]
-        # keep the connected component containing / nearest the candidate centre
-        from skimage import measure
 
+        # ---- restrict to where the model is valid: around the candidate
+        z0, y0, x0, z1, y1, x1 = c.bbox_zyx
+        sp = np.asarray(pre.spacing, float)
+        my = max(int(round(6.0 / sp[1])), int(0.5 * (y1 - y0)))
+        mx = max(int(round(6.0 / sp[2])), int(0.5 * (x1 - x0)))
+        roi = np.zeros(pre.hu.shape, bool)
+        roi[max(z0 - 2, 0):z1 + 2, max(y0 - my, 0):y1 + my, max(x0 - mx, 0):x1 + mx] = True
+        out &= roi
+        out &= pre.hu > -650.0  # lesion tissue (solid or ground-glass) is denser than aerated lung
+        if lung is not None and lung.any():
+            from scipy import ndimage
+
+            out &= ndimage.binary_dilation(lung, iterations=3)
+        # keep the connected component containing / nearest the candidate centre
         lab = measure.label(out)
         if lab.max() > 1:
             ids, counts = np.unique(lab[lab > 0], return_counts=True)
