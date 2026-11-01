@@ -12,6 +12,7 @@ the conversion steps matter scientifically:
 """
 from __future__ import annotations
 
+import shutil
 import tempfile
 from collections import defaultdict
 from pathlib import Path
@@ -212,6 +213,11 @@ def load_any(path: str | Path, max_mb: float = 500) -> CTVolume:
     if fmt in {"dicom", "dicom-maybe"}:
         vol = load_dicom_series(path)
         return vol
+    if fmt == "nifti" and not path.name.lower().endswith((".nii", ".nii.gz")):
+        # a NIfTI renamed by a browser or chat app (e.g. "scan_nii.gz"): give it the proper extension
+        fixed = Path(tempfile.mkdtemp(prefix="ctcancer_")) / ("scan.nii.gz" if path.name.lower().endswith(".gz") else "scan.nii")
+        shutil.copyfile(path, fixed)
+        return load_sitk_image(fixed)
     if fmt in {"nifti", "mhd", "nrrd"}:
         return load_sitk_image(path)
     if fmt in {"png", "jpeg"}:

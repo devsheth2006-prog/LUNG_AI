@@ -8,7 +8,7 @@ from pathlib import Path
 import numpy as np
 
 ALLOWED_SUFFIXES = {".dcm", ".dicom", ".nii", ".nii.gz", ".mhd", ".mha", ".nrrd",
-                    ".png", ".jpg", ".jpeg", ".zip", ""}
+                    ".png", ".jpg", ".jpeg", ".zip", ".gz", ""}  # ".gz": accepted only if it contains NIfTI
 
 
 class ScanValidationError(ValueError):
