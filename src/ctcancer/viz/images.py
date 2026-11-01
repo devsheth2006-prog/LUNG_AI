@@ -53,11 +53,15 @@ def to_png_bytes(rgb: np.ndarray, scale: int = 1) -> bytes:
 
 
 def representative_slice(arrays, lesion_id: int | None) -> int:
+    lung_area = (arrays.lung_lr > 0).sum(axis=(1, 2))
     if lesion_id is not None and (arrays.lesion_labels == lesion_id).any():
         zs = np.where((arrays.lesion_labels == lesion_id).any(axis=(1, 2)))[0]
         areas = [(arrays.lesion_labels[z] == lesion_id).sum() for z in zs]
-        return int(zs[int(np.argmax(areas))])
-    lz = np.where((arrays.lung_lr > 0).any(axis=(1, 2)))[0]
+        z = int(zs[int(np.argmax(areas))])
+        # only use the lesion slice if it actually shows lung (a lesion mask can extend past the lungs)
+        if lung_area.max() == 0 or lung_area[z] >= 0.1 * lung_area.max():
+            return z
+    lz = np.where(lung_area > 0)[0]
     return int(lz[len(lz) // 2]) if len(lz) else arrays.norm.shape[0] // 2
 
 
