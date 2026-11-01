@@ -109,6 +109,6 @@ if res is not None:
         c = st.columns(4)
         nav_link("pages/2_CT_Viewer.py", "CT viewer", "🩻", c[0])
         nav_link("pages/4_Cancer_Analysis.py", "Analysis dashboard", "📊", c[1])
-        nav_link("pages/7_Explainability.py", "Explainability", "🔍", c[2])
-        nav_link("pages/9_Report.py", "Report", "📄", c[3])
+        nav_link("pages/6_Explainability.py", "Explainability", "🔍", c[2])
+        nav_link("pages/7_Report.py", "Report", "📄", c[3])
 disclaimer()

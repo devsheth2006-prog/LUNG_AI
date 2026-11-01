@@ -80,7 +80,8 @@ def test_api_endpoints(phantom_nifti, tmp_path, monkeypatch):
     api._pipeline = _pipe(tmp_path)
     c = TestClient(api.app)
     assert c.get("/health").json()["status"] == "ok"
-    assert c.get("/models").json()["malignancy"]["state"] == "not_trained"
+    # "evaluated" once trained weights are committed in models/, "not_trained" otherwise
+    assert c.get("/models").json()["malignancy"]["state"] in ("not_trained", "evaluated", "trained_unevaluated")
     assert len(c.get("/datasets").json()["datasets"]) >= 4
     with open(phantom_nifti, "rb") as f:
         r = c.post("/analyze", files={"file": ("phantom.nii.gz", f, "application/gzip")},

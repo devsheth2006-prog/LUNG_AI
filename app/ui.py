@@ -1,4 +1,4 @@
-﻿"""Shared Streamlit UI: theme, layout primitives, status chips, gauges and the CT viewer."""
+"""Shared Streamlit UI: theme, layout primitives, status chips, gauges and the CT viewer."""
 from __future__ import annotations
 
 import sys
@@ -52,8 +52,8 @@ div[data-testid="stMetricValue"] {{ font-family:'IBM Plex Mono',monospace; }}
 """
 
 
-def page(title: str, subtitle: str = "Research prototype Â· not for clinical use") -> None:
-    st.set_page_config(page_title=f"{title} Â· CT Lung Research", page_icon="ðŸ«", layout="wide")
+def page(title: str, subtitle: str = "Research prototype · not for clinical use") -> None:
+    st.set_page_config(page_title=f"{title} · CT Lung Research", page_icon="🫁", layout="wide")
     st.markdown(CSS, unsafe_allow_html=True)
     st.markdown(f'<div class="ct-header"><span class="t">{title}</span><span class="s">{subtitle}</span></div>',
                 unsafe_allow_html=True)
@@ -70,7 +70,7 @@ def page(title: str, subtitle: str = "Research prototype Â· not for clinical u
 
 
 def disclaimer(extra: str = "") -> None:
-    st.markdown(f'<div class="disclaimer"><b>Model-generated research estimates â€” not a medical diagnosis.</b> '
+    st.markdown(f'<div class="disclaimer"><b>Model-generated research estimates — not a medical diagnosis.</b> '
                 f'{DISCLAIMER} {extra}</div>', unsafe_allow_html=True)
 
 
@@ -92,7 +92,7 @@ def require_scan():
     r = st.session_state.get("result")
     if r is None:
         st.info("No scan analysed yet. Go to **Upload CT** first.")
-        nav_link("pages/1_Upload_CT.py", "Open Upload CT", "â¬†ï¸")
+        nav_link("pages/1_Upload_CT.py", "Open Upload CT", "⬆️")
         st.stop()
     if not r.ok:
         st.error(r.error)
@@ -109,7 +109,7 @@ def nav_link(path: str, label: str, icon: str | None = None, container=None) -> 
 
 
 def pct(p) -> str:
-    return "â€”" if p is None else f"{100 * p:.0f}%"
+    return "—" if p is None else f"{100 * p:.0f}%"
 
 
 def gauge(p: float | None, title: str, bands=(0.33, 0.66)) -> go.Figure:
@@ -144,7 +144,7 @@ def ct_figure(img_hu: np.ndarray, level: float, width: float, lung=None, lesion=
     if not is_hu:
         lo, hi = float(np.percentile(img_hu, 0.5)), float(np.percentile(img_hu, 99.5))
     fig = go.Figure(go.Heatmap(z=img_hu, colorscale="gray", zmin=lo, zmax=hi, showscale=False,
-                               hovertemplate="x %{x} Â· y %{y}<br>%{z:.0f}" + (" HU" if is_hu else "") + "<extra></extra>"))
+                               hovertemplate="x %{x} · y %{y}<br>%{z:.0f}" + (" HU" if is_hu else "") + "<extra></extra>"))
     if lung is not None and lung.any():
         fig.add_trace(go.Heatmap(z=np.where(lung, 1.0, np.nan), colorscale=[[0, ACCENT], [1, ACCENT]],
                                  opacity=0.22, showscale=False, hoverinfo="skip"))
@@ -158,4 +158,3 @@ def ct_figure(img_hu: np.ndarray, level: float, width: float, lung=None, lesion=
     fig.update_xaxes(visible=False, constrain="domain")
     fig.update_layout(**PLOT_LAYOUT, height=height, title=title, dragmode="pan")
     return fig
-

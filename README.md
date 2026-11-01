@@ -103,7 +103,7 @@ index lesion is a known primary NSCLC tumour — the app states this next to eve
 ```mermaid
 flowchart LR
   subgraph Client
-    UI[Streamlit dashboard<br/>10 pages]
+    UI[Streamlit dashboard<br/>8 pages]
   end
   subgraph Service
     API[FastAPI /analyze /models /datasets]
@@ -175,7 +175,7 @@ flowchart LR
 
 ```
 ct-cancer-ai/
-├── app/                     Streamlit UI: Home.py + pages/1_Upload_CT … 9_Report, ui.py (theme, viewer)
+├── app/                     Streamlit UI: Home.py + pages/1_Upload_CT … 7_Report, ui.py (theme, viewer)
 ├── api/main.py              FastAPI inference service
 ├── configs/                 default.yaml + profile_lite.yaml / profile_full.yaml
 ├── data/                    (git-ignored) raw/, processed/, splits/, features/ — see data/README.md
@@ -292,7 +292,7 @@ Each metric is computed **once** on the held-out test patients, with patient-boo
 - Multiclass: macro ROC-AUC (OvR), macro F1, per-class report.
 
 Figures → `outputs/figures/` (ROC/PR/calibration, confusion matrices, training curves, PCA/LDA
-projections, feature importance, model comparison). The *Model Performance* page renders them.
+projections, feature importance, model comparison). `python evaluation/evaluate.py` summarises them.
 
 ## 10. Inference and the application
 
@@ -306,8 +306,8 @@ Pages: **Home** (pipeline, module status, datasets, privacy) · **Upload CT** (v
 age/sex, phantom demo) · **CT Viewer** (axial/coronal/sagittal, slice slider, zoom/pan, window/level
 presets + sliders, lung/lesion/Grad-CAM overlays, 3-D mesh rendering) · **Segmentation** ·
 **Cancer Analysis** (dashboard cards, lesion table, probability bars, gauges) · **Staging / Risk** ·
-**Metastasis** · **Explainability** (Grad-CAM, Grad-CAM++, feature importance, interactive PCA/LDA) ·
-**Model Performance** · **Report** (HTML/PDF/JSON download).
+**Explainability** (Grad-CAM, Grad-CAM++, feature importance, interactive PCA/LDA) ·
+**Report** (HTML/PDF/JSON download).
 
 The *Synthetic software-test phantom* option lets you click through the full UI before any data is
 downloaded. It is a geometric object, labelled as such everywhere, and model outputs on it are meaningless.
