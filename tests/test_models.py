@@ -53,3 +53,24 @@ def test_multimodal_net_heads():
     img_only = MultimodalNet(16, 0, {"n_involvement": 2})
     assert img_only(torch.randn(5, 16))["n_involvement"].shape == (5, 2)
     assert np.isfinite(out["subtype"].detach().numpy()).all()
+
+
+def test_old_checkpoints_with_gradcam_alias_still_load(tmp_path):
+    """Weights saved while the model still had a `gradcam_layer` alias must keep loading."""
+    import json
+
+    from ctcancer.config import load_config
+    from ctcancer.inference.pipeline import ModelBank
+
+    m = build_classifier("resnet18", 2, pretrained=False)
+    state = dict(m.state_dict())
+    state.update({f"gradcam_layer.{k[len('net.layer4.'):]}": v for k, v in m.state_dict().items()
+                  if k.startswith("net.layer4.")})
+    d = tmp_path / "malignancy"
+    d.mkdir()
+    torch.save({"state_dict": state}, d / "model.pt")
+    (d / "model_card.json").write_text(json.dumps({"task": "malignancy", "architecture": "resnet18",
+                                                   "classes": ["benign", "suspicious"],
+                                                   "test_metrics": {"roc_auc": 0.5}}))
+    bank = ModelBank(load_config(), tmp_path)
+    assert bank.torch_model("malignancy") is not None

@@ -105,7 +105,10 @@ class ModelBank:
                 model = build_segmentation_model(card["architecture"], 1, 2, card.get("base_channels", 16))
             else:
                 model = build_classifier(card["architecture"], len(card.get("classes", [0, 1])), pretrained=False)
-            model.load_state_dict(ckpt["state_dict"])
+            # checkpoints saved before Grad-CAM was removed also hold the same weights a second time
+            # under "gradcam_layer.*" (an alias of the last backbone block); drop those duplicates
+            state = {k: v for k, v in ckpt["state_dict"].items() if not k.startswith("gradcam_layer.")}
+            model.load_state_dict(state)
             model.eval().to(self._dev())
             self._cache[task] = (model, card)
         except Exception as exc:  # corrupted weights, version mismatch, torch missing
