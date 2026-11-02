@@ -56,18 +56,31 @@ def classical_lung_mask(hu: np.ndarray, spacing=(1.0, 1.0, 1.0), is_hu: bool = T
 
 
 def split_left_right(mask: np.ndarray) -> np.ndarray:
-    """Label map: 1 = patient right lung, 2 = patient left lung (LPS: higher x = left)."""
-    lab = measure.label(mask, connectivity=1)
+    """Label map: 1 = patient right lung, 2 = patient left lung (LPS: higher x = left).
+
+    If the two lungs are separate components, each is labelled by which side of the midline its
+    centre lies on. If they touch (one large component, possibly plus small fragments), the mask is
+    split at the gap between the lungs: the x position with the fewest lung voxels in the central
+    part of the chest. Small fragments are labelled by the side they lie on."""
     out = np.zeros(mask.shape, np.uint8)
-    props = sorted(measure.regionprops(lab), key=lambda p: p.area, reverse=True)[:2]
-    if len(props) == 2:
+    if not mask.any():
+        return out
+    lab = measure.label(mask, connectivity=1)
+    props = sorted(measure.regionprops(lab), key=lambda p: p.area, reverse=True)
+    major = [p for p in props if p.area >= 0.05 * props[0].area]
+    xs_all = np.argwhere(mask)[:, 2]
+    lo, hi = np.percentile(xs_all, 5), np.percentile(xs_all, 95)
+    if len(major) >= 2 and (major[0].centroid[2] < (lo + hi) / 2) != (major[1].centroid[2] < (lo + hi) / 2):
+        split = (major[0].centroid[2] + major[1].centroid[2]) / 2
         for p in props:
-            out[lab == p.label] = 1 if p.centroid[2] < mask.shape[2] / 2 else 2
-    elif len(props) == 1:  # lungs touch — split at the midline of the mask
-        xs = np.argwhere(mask)[:, 2]
-        mid = int(np.median(xs))
-        out[mask] = 1
-        out[:, :, mid:][mask[:, :, mid:]] = 2
+            out[lab == p.label] = 1 if p.centroid[2] < split else 2
+        return out
+    # lungs touch: find the gap (fewest lung voxels) in the central 40% of the lung field
+    counts = mask.sum(axis=(0, 1)).astype(float)
+    a, b = int(lo + 0.3 * (hi - lo)), int(lo + 0.7 * (hi - lo)) + 1
+    split = a + int(np.argmin(counts[a:b])) if b > a else int(np.median(xs_all))
+    out[mask] = 1
+    out[:, :, split:][mask[:, :, split:]] = 2
     return out
 
 
