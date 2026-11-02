@@ -14,6 +14,30 @@ INTERPRETATION = ("Regions contributing most strongly to this model prediction (
                   "and do not prove the presence or location of a tumour.")
 
 
+def select_cam_layer(model, x, min_side: int = 3):
+    """Deepest layer whose feature map is at least `min_side` pixels wide for this input.
+
+    On small patches (48 x 48) the last block of DenseNet121/ResNet18 is only 1 x 1 or 2 x 2, so a
+    Grad-CAM computed there carries no spatial information. We step back to the deepest block that
+    still has a usable map (e.g. DenseNet121 dense block 3 -> 3 x 3, ResNet18 layer 3 -> 3 x 3)."""
+    import torch
+
+    layers = list(getattr(model, "cam_layers", None) or [model.gradcam_layer])
+    sizes, hooks = {}, []
+    for i, layer in enumerate(layers):
+        hooks.append(layer.register_forward_hook(lambda _m, _i, o, i=i: sizes.__setitem__(i, min(o.shape[2:]))))
+    try:
+        with torch.no_grad():
+            model(x)
+    finally:
+        for h in hooks:
+            h.remove()
+    for i, layer in enumerate(layers):
+        if sizes.get(i, 0) >= min_side:
+            return layer, sizes[i]
+    return layers[-1], sizes.get(len(layers) - 1, 0)
+
+
 class GradCAM:
     def __init__(self, model, target_layer, plus_plus: bool = False):
         self.model, self.layer, self.pp = model, target_layer, plus_plus
@@ -59,7 +83,9 @@ class GradCAM:
         mode = "bilinear" if cam.ndim == 4 else "trilinear"
         cam = F.interpolate(cam, size=x.shape[2:], mode=mode, align_corners=False)[0, 0]
         cam = cam - cam.min()
-        cam = cam / cam.max() if cam.max() > 0 else cam
+        peak = float(cam.max())
+        # a (near-)constant map has no localisation; normalising it would only amplify rounding noise
+        cam = cam / peak if peak > 1e-6 * (1.0 + float(A.abs().max())) else torch.zeros_like(cam)
         prob = float(logits.softmax(1)[0, class_idx])
         return cam.cpu().numpy(), class_idx, prob
 

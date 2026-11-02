@@ -71,6 +71,7 @@ class Backbone2D(nn.Module):
             self.emb_dim = net.fc.in_features
             net.fc = nn.Identity()
             self.gradcam_layer = net.layer4
+            self.cam_layers = [net.layer4, net.layer3, net.layer2]
             self.finetune_modules = [net.layer4]
         elif arch == "densenet121":
             w = tvm.DenseNet121_Weights.IMAGENET1K_V1 if pretrained else None
@@ -78,6 +79,7 @@ class Backbone2D(nn.Module):
             self.emb_dim = net.classifier.in_features
             net.classifier = nn.Identity()
             self.gradcam_layer = net.features.denseblock4
+            self.cam_layers = [net.features.denseblock4, net.features.denseblock3, net.features.denseblock2]
             self.finetune_modules = [net.features.denseblock4, net.features.norm5]
         elif arch == "efficientnet_b0":
             w = tvm.EfficientNet_B0_Weights.IMAGENET1K_V1 if pretrained else None

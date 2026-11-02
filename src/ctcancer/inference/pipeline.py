@@ -337,7 +337,7 @@ class AnalysisPipeline:
         import torch
 
         from ..data.datasets import patch_to_input
-        from ..explain.gradcam import GradCAM
+        from ..explain.gradcam import GradCAM, select_cam_layer
 
         model, card = mal
         size = card.get("patch_vox", 64)
@@ -350,8 +350,9 @@ class AnalysisPipeline:
         T = card.get("temperature", 1.0)
         p = float((logits / T).softmax(1)[0, 1])
         cams = {}
+        cam_layer, cam_side = select_cam_layer(model, x)
         for name, pp in (("gradcam", False), ("gradcam_pp", True)):
-            gc = GradCAM(model, model.gradcam_layer, plus_plus=pp)
+            gc = GradCAM(model, cam_layer, plus_plus=pp)
             cam, _, _ = gc(x, class_idx=1)
             gc.remove()
             cams[name] = cam if cam.ndim == 2 else cam[cam.shape[0] // 2]
