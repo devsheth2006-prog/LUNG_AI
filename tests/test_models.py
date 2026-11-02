@@ -3,8 +3,7 @@ import pytest
 
 torch = pytest.importorskip("torch")
 
-from ctcancer.explain.gradcam import GradCAM  # noqa: E402
-from ctcancer.models.classifiers import CNN3D, FocalLoss, MultimodalNet, TemperatureScaler, build_classifier  # noqa: E402
+from ctcancer.models.classifiers import FocalLoss, MultimodalNet, TemperatureScaler, build_classifier  # noqa: E402
 from ctcancer.models.unet import DiceCELoss, UNet  # noqa: E402
 
 
@@ -26,16 +25,6 @@ def test_backbone_forward_embed_and_staging(arch):
     assert not any(p.requires_grad for p in m.net.parameters())
     m.set_stage(2)
     assert any(p.requires_grad for p in m.net.parameters())
-
-
-@pytest.mark.parametrize("pp", [False, True])
-def test_gradcam_2d_and_3d(pp):
-    m = build_classifier("resnet18", 2, pretrained=False)
-    cam, cls, prob = GradCAM(m, m.gradcam_layer, plus_plus=pp)(torch.rand(1, 3, 64, 64), 1)
-    assert cam.shape == (64, 64) and 0 <= cam.min() and cam.max() <= 1 and 0 <= prob <= 1
-    m3 = CNN3D()
-    cam3, _, _ = GradCAM(m3, m3.gradcam_layer, plus_plus=pp)(torch.rand(1, 1, 32, 32, 32))
-    assert cam3.shape == (32, 32, 32)
 
 
 def test_focal_loss_downweights_easy_examples():

@@ -21,7 +21,7 @@ from ctcancer.config import cli_parser, load_config, set_seed
 from ctcancer.data.splits import load_split
 from ctcancer.evaluation.metrics import binary_metrics, bootstrap_ci
 from ctcancer.evaluation.plots import feature_importance, model_comparison, projection_plot
-from ctcancer.explain.gradcam import tree_feature_importance
+from ctcancer.explain.importance import tree_feature_importance
 from ctcancer.logging_utils import get_logger
 
 log = get_logger("run_pca_lda")

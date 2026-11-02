@@ -4,41 +4,15 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
-from ui import ACCENT, AMBER, PLOT_LAYOUT, chip, ct_figure, page, require_scan
+from ui import ACCENT, AMBER, PLOT_LAYOUT, page, require_scan
 
 from ctcancer.classical.dimred import PCA_VS_LDA_TEXT
 from ctcancer.config import load_config
 from ctcancer.inference.registry import models_dir
-from ctcancer.explain.gradcam import INTERPRETATION
-from ctcancer.explain.gradcam import overlay_heatmap
 
 page("Explainability")
 res, A = require_scan()
-st.info(INTERPRETATION)
-
-st.markdown("#### Grad-CAM — index lesion")
-if A is None or res.index_lesion not in getattr(A, "cams", {}):
-    st.markdown(chip("not_trained"), unsafe_allow_html=True)
-    st.caption("Grad-CAM needs the trained malignancy CNN. Train it with `training/train_classifier.py --task malignancy`.")
-else:
-    c = A.cams[res.index_lesion]
-    z = c["z"]
-    cols = st.columns(4)
-    patch_hu = c["patch"]
-    lm = None
-    if A is not None:
-        s, (cy, cx) = c["size"], c["centre_yx"]
-        y0, x0 = int(round(cy)) - s // 2, int(round(cx)) - s // 2
-        lm = (A.lesion_labels[z, max(y0, 0):y0 + s, max(x0, 0):x0 + s] == res.index_lesion)
-    cols[0].image(patch_hu, caption="Lesion patch (input)", clamp=True, width="stretch")
-    cols[1].image(overlay_heatmap(patch_hu, c["gradcam"]), caption="Grad-CAM", width="stretch")
-    cols[2].image(overlay_heatmap(patch_hu, c["gradcam_pp"]), caption="Grad-CAM++", width="stretch")
-    if lm is not None and lm.shape == patch_hu.shape:
-        cols[3].plotly_chart(ct_figure(patch_hu * 1500 - 1350, -600, 1500, lesion=lm, height=260,
-                                       title="Segmentation"), width="stretch")
-    st.caption("Grad-CAM weighs the last convolutional feature maps by the gradient of the 'suspicious' logit. "
-               "Grad-CAM++ uses higher-order gradient weights and often localises multiple/small regions better. "
-               "Both are coarse (feature-map resolution is ~1/32 of the input).")
+st.info("This page explains the classical models: which radiomic features drive their decisions, and how benign and suspicious nodules are arranged in feature space (PCA and LDA).")
 
 st.markdown("#### Radiomic feature attributions")
 imp_png = load_config().path("figures_dir") / "radiomics_rf_importance.png"
@@ -46,7 +20,7 @@ if imp_png.exists():
     st.image(str(imp_png), caption="Random-forest impurity importance on the development set (run_pca_lda.py)")
 else:
     st.caption("Not available until `training/run_pca_lda.py` has been run on real features. "
-               "Optional SHAP values: `pip install shap`, see `ctcancer.explain.gradcam.shap_values`.")
+               "Optional SHAP values: `pip install shap`, see `ctcancer.explain.importance.shap_values`.")
 
 st.markdown("#### PCA vs LDA")
 st.markdown(PCA_VS_LDA_TEXT)

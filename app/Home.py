@@ -15,7 +15,7 @@ st.markdown("""
 #### What this platform does
 Upload a chest CT and the pipeline runs **preprocessing → lung segmentation → nodule candidate detection →
 lesion segmentation → radiomic & deep feature extraction → malignancy estimation → subtype / TNM / spread
-risk estimation → Grad-CAM explainability → research report**. Each stage reports *how* it produced its
+risk estimation → feature-level explainability → research report**. Each stage reports *how* it produced its
 output — a trained and evaluated model, an untrained classical baseline, or "not available" — so nothing
 is presented with more confidence than the evidence supports.
 """)
@@ -27,7 +27,7 @@ with c1:
              "Lung segmentation (U-Net or classical baseline)", "Nodule candidates + CNN false-positive reduction",
              "Lesion segmentation (U-Net)", "Radiomics (shape · first-order · GLCM) + CNN embedding",
              "Malignancy-suspicion probability (calibrated)", "Subtype · T · N · M estimates (where labels exist)",
-             "Grad-CAM / Grad-CAM++ attention", "Structured HTML/PDF research report"]
+             "Feature importance · PCA / LDA projections", "Structured HTML/PDF research report"]
     st.markdown("".join(f'<div class="step"><span class="i">{i:02d}</span>{s}</div>' for i, s in enumerate(steps, 1)),
                 unsafe_allow_html=True)
 with c2:

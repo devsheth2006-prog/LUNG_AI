@@ -31,7 +31,7 @@ Upload a chest CT (DICOM series, NIfTI, MetaImage; PNG/JPEG for demonstration on
 CT → validation → HU conversion & resampling → lung segmentation → nodule candidates
    → CNN false-positive reduction → lesion segmentation → radiomic + deep features
    → malignancy-suspicion probability → subtype / T / N / M estimates (where labels exist)
-   → Grad-CAM / Grad-CAM++ → structured HTML/PDF research report
+   → feature importance · PCA/LDA projections → structured HTML/PDF research report
 ```
 
 The platform combines medical CT processing, 2-D/3-D U-Nets, transfer-learned CNN classifiers
@@ -117,7 +117,7 @@ flowchart LR
     CLS[models: ResNet/DenseNet/3D-CNN,<br/>multimodal net]
     CL[classical: PCA, LDA, RF, GB, LR]
     RISK[risk: TaskSpec registry, tabular heads]
-    XAI[explain: Grad-CAM, Grad-CAM++, SHAP]
+    XAI[explain: feature importance, SHAP]
     REP[reporting: HTML + PDF]
     REG[(models/*/model_card.json)]
   end
@@ -145,7 +145,7 @@ flowchart TD
   G1 & G2 --> H[Lesion mask: U-Net or classical component]
   H --> I[Measurements · approx. location · radiomics]
   I --> J{Malignancy CNN trained?}
-  J -- yes --> J1[Temperature-scaled probability + CNN embedding + Grad-CAM/++]
+  J -- yes --> J1[Temperature-scaled probability + CNN embedding]
   J -- no --> J2[Model not trained]
   J1 --> K[Subtype · T · N · M · recurrence heads<br/>calibrated tabular models]
   K --> L[Report]
@@ -194,7 +194,7 @@ ct-cancer-ai/
 │   │                        temperature scaling, multimodal fusion net
 │   ├── classical/           PCA/LDA pipelines, ablation configurations
 │   ├── risk/                TaskSpec registry (wording + caveats), tabular trainer
-│   ├── explain/             Grad-CAM, Grad-CAM++, feature importance, SHAP
+│   ├── explain/             feature importance, SHAP
 │   ├── evaluation/          metrics (+bootstrap CIs, calibration), plots
 │   ├── inference/           pipeline orchestration, model registry
 │   ├── reporting/           HTML/PDF report
@@ -304,9 +304,9 @@ python inference/inference.py --input scan.nii.gz --age 67 --sex male   # CLI + 
 
 Pages: **Home** (pipeline, module status, datasets, privacy) · **Upload CT** (validation, optional
 age/sex, phantom demo) · **CT Viewer** (axial/coronal/sagittal, slice slider, zoom/pan, window/level
-presets + sliders, lung/lesion/Grad-CAM overlays, 3-D mesh rendering) · **Segmentation** ·
+presets + sliders, lung/lesion overlays, 3-D mesh rendering) · **Segmentation** ·
 **Cancer Analysis** (dashboard cards, lesion table, probability bars, gauges) · **Staging / Risk** ·
-**Explainability** (Grad-CAM, Grad-CAM++, feature importance, interactive PCA/LDA) ·
+**Explainability** (feature importance, interactive PCA/LDA) ·
 **Report** (HTML/PDF/JSON download).
 
 The *Synthetic software-test phantom* option lets you click through the full UI before any data is
@@ -391,9 +391,9 @@ gradient boosting) with grouped CV, refits the best on development patients with
 and tests once. Tasks with any class below `risk.min_positive_labels` (default 15) are **refused**.
 Risk bands Low/Moderate/High use display cut-offs (33 %/66 %) that are explicitly *not* clinical thresholds.
 
-**Explainability.** Grad-CAM and Grad-CAM++ on the last convolutional stage (2-D or 3-D),
-impurity/coefficient importance for unprojected tabular models, optional SHAP. Always captioned
-"regions contributing most strongly to this model prediction"; never presented as proof of location.
+**Explainability.** Impurity/coefficient importance for unprojected tabular models, optional SHAP,
+and PCA/LDA projections of held-out patients. (Grad-CAM was removed: on 48 x 48 patches the CNN's
+final feature maps are too small to give meaningful localisation.)
 
 ## 13. Research comparisons and ablation study
 
@@ -424,7 +424,7 @@ Covered: DICOM loading (HU conversion with slope/intercept, ordering against mis
 `InstanceNumber`, missing slices, padding, corrupted files, PHI not retained), NIfTI, PNG demo mode,
 zip-slip and size limits, preprocessing, lung masking, candidate detection accuracy, shape-feature
 accuracy on spheres, metrics with known values, patient-level splitting and leakage assertion, train-only
-imputation, clinical CSV parsing (unknown stages stay missing), U-Net/backbones/3-D CNN, Grad-CAM/++,
+imputation, clinical CSV parsing (unknown stages stay missing), U-Net/backbones/3-D CNN,
 focal loss, temperature scaling, multimodal net, registry states, pipeline honesty without models,
 graceful errors, report content, API endpoints.
 
@@ -465,8 +465,7 @@ ensembles, conformal prediction); DICOM-SEG/SR export; organ-specific metastasis
 6. Ronneberger O et al. *U-Net.* MICCAI 2015. · Çiçek Ö et al. *3D U-Net.* MICCAI 2016. · Isensee F et al. *nnU-Net.* Nat Methods 2021.
 7. He K et al. *Deep residual learning.* CVPR 2016. · Huang G et al. *Densely connected CNNs.* CVPR 2017.
 8. Lin T-Y et al. *Focal loss.* ICCV 2017. · Guo C et al. *On calibration of modern neural networks.* ICML 2017.
-9. Selvaraju RR et al. *Grad-CAM.* ICCV 2017. · Chattopadhay A et al. *Grad-CAM++.* WACV 2018.
-10. van Griethuysen JJM et al. *Computational radiomics system (PyRadiomics).* Cancer Res 2017. · Zwanenburg A et al. *IBSI.* Radiology 2020.
-11. Antonelli M et al. *The Medical Segmentation Decathlon.* Nat Commun 2022.
+9. van Griethuysen JJM et al. *Computational radiomics system (PyRadiomics).* Cancer Res 2017. · Zwanenburg A et al. *IBSI.* Radiology 2020.
+10. Antonelli M et al. *The Medical Segmentation Decathlon.* Nat Commun 2022.
 
 *Code licence: MIT. Datasets retain their own licences and citation requirements.*

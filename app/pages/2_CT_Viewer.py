@@ -22,7 +22,6 @@ with st.sidebar:
     width = st.slider("Width (HU)", 50, 2500, wd, disabled=not is_hu)
     show_lung = st.checkbox("Lung mask", True)
     show_les = st.checkbox("Lesion contours", True)
-    show_cam = st.checkbox("Grad-CAM (index lesion slice)", False)
 
 hu, lung, les = A.hu, A.lung_lr > 0, A.lesion_labels > 0
 n = {"Axial": hu.shape[0], "Coronal": hu.shape[1], "Sagittal": hu.shape[2]}[plane]
@@ -40,16 +39,6 @@ else:
     img, lm, sm, aspect = hu[::-1, :, idx], lung[::-1, :, idx], les[::-1, :, idx], sp[0] / sp[1]
 
 cam = None
-if show_cam and plane == "Axial" and res.index_lesion in A.cams and A.cams[res.index_lesion]["z"] == idx:
-    c = A.cams[res.index_lesion]
-    cam = np.full(img.shape, np.nan)
-    s, (cy, cx) = c["size"], c["centre_yx"]
-    y0, x0 = int(round(cy)) - s // 2, int(round(cx)) - s // 2
-    ys, xs = slice(max(y0, 0), min(y0 + s, img.shape[0])), slice(max(x0, 0), min(x0 + s, img.shape[1]))
-    cam[ys, xs] = c["gradcam"][ys.start - y0:ys.stop - y0, xs.start - x0:xs.stop - x0]
-elif show_cam:
-    st.caption("Grad-CAM is available on the axial slice through the index lesion centre when the malignancy model is trained.")
-
 st.plotly_chart(ct_figure(img, level, width, lm if show_lung else None, sm if show_les else None, cam, aspect,
                           f"{plane} {idx + 1}/{n}", is_hu), width="stretch",
                 config={"scrollZoom": True, "displaylogo": False})

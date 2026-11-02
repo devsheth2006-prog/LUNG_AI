@@ -44,7 +44,6 @@ class CNN3D(nn.Module):
 
         self.features = nn.Sequential(blk(in_channels, base), blk(base, base * 2), blk(base * 2, base * 4),
                                       nn.Conv3d(base * 4, emb_dim, 3, padding=1), nn.ReLU(inplace=False))
-        self.gradcam_layer = self.features[-1]
         self.pool = nn.AdaptiveAvgPool3d(1)
         self.fc = nn.Sequential(nn.Dropout(0.3), nn.Linear(emb_dim, n_classes))
         self.emb_dim = emb_dim
@@ -57,8 +56,8 @@ class CNN3D(nn.Module):
 
 
 class Backbone2D(nn.Module):
-    """ImageNet-pretrained torchvision backbone with a new head; exposes `embed()` and the
-    Grad-CAM target layer."""
+    """ImageNet-pretrained torchvision backbone with a new head; exposes `embed()` and
+    the trainable stages."""
 
     def __init__(self, arch: str = "resnet18", n_classes: int = 2, pretrained: bool = True):
         super().__init__()
@@ -70,23 +69,18 @@ class Backbone2D(nn.Module):
             net = tvm.resnet18(weights=w)
             self.emb_dim = net.fc.in_features
             net.fc = nn.Identity()
-            self.gradcam_layer = net.layer4
-            self.cam_layers = [net.layer4, net.layer3, net.layer2]
             self.finetune_modules = [net.layer4]
         elif arch == "densenet121":
             w = tvm.DenseNet121_Weights.IMAGENET1K_V1 if pretrained else None
             net = tvm.densenet121(weights=w)
             self.emb_dim = net.classifier.in_features
             net.classifier = nn.Identity()
-            self.gradcam_layer = net.features.denseblock4
-            self.cam_layers = [net.features.denseblock4, net.features.denseblock3, net.features.denseblock2]
             self.finetune_modules = [net.features.denseblock4, net.features.norm5]
         elif arch == "efficientnet_b0":
             w = tvm.EfficientNet_B0_Weights.IMAGENET1K_V1 if pretrained else None
             net = tvm.efficientnet_b0(weights=w)
             self.emb_dim = net.classifier[1].in_features
             net.classifier = nn.Identity()
-            self.gradcam_layer = net.features[-1]
             self.finetune_modules = [net.features[-2], net.features[-1]]
         else:
             raise ValueError(f"Unknown architecture {arch}")

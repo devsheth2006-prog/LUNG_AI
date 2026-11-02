@@ -39,7 +39,6 @@ class AnalysisArrays:
     lung_lr: np.ndarray                  # 0 bg / 1 right / 2 left
     lesion_labels: np.ndarray            # 0 bg / k lesion id
     spacing: tuple
-    cams: dict[int, dict] = field(default_factory=dict)  # lesion id -> {z, cam2d, cam_pp2d, box}
 
 
 @dataclass
@@ -337,7 +336,6 @@ class AnalysisPipeline:
         import torch
 
         from ..data.datasets import patch_to_input
-        from ..explain.gradcam import GradCAM, select_cam_layer
 
         model, card = mal
         size = card.get("patch_vox", 64)
@@ -349,15 +347,6 @@ class AnalysisPipeline:
             emb = model.embed(x)[0].cpu().numpy()
         T = card.get("temperature", 1.0)
         p = float((logits / T).softmax(1)[0, 1])
-        cams = {}
-        cam_layer, cam_side = select_cam_layer(model, x)
-        for name, pp in (("gradcam", False), ("gradcam_pp", True)):
-            gc = GradCAM(model, cam_layer, plus_plus=pp)
-            cam, _, _ = gc(x, class_idx=1)
-            gc.remove()
-            cams[name] = cam if cam.ndim == 2 else cam[cam.shape[0] // 2]
-        arrays.cams[lid] = {"z": int(round(centroid[0])), "centre_yx": (float(centroid[1]), float(centroid[2])),
-                            "size": size, "patch": apply_window(patch[size // 2], -600, 1500), **cams}
         return {"malignancy": {"status": self.bank.statuses["malignancy"].badge, "probability": round(p, 4),
                                "benign_probability": round(1 - p, 4), "temperature": T,
                                "wording": TASKS["malignancy"].output_wording,
